@@ -6,5 +6,7 @@
 
 module.exports = {
   siteName: 'Alina Trifan',
-  plugins: []
+  plugins: [
+    'gridsome-plugin-tailwindcss',
+  ]
 }

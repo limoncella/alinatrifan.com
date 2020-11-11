@@ -10,17 +10,24 @@
       </nav>
     </header>
     <slot/>
-    <footer>
-      <p>© Alina Trifan 2020<br><br>
-Sheffield, UK<br><br>
-at@alinatrifan.com</p>
-      <p>Follow 
-        <ul>
-          <li><g-link to="https://www.facebook.com/alinatrifan/">Facebook</g-link></li>
-          <li><g-link to="https://www.instagram.com/_alinatrifan/">Instagram</g-link></li>
-          <li><g-link to="https://twitter.com/_alinatrifan">Twitter</g-link></li>
-        </ul>
-      </p>
+    <footer class="mt-20">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <div class="mb-3">© Alina Trifan 2020</div>
+          <div>Sheffield, UK</div>
+          <div>at@alinatrifan.com</div>
+        </div>
+        <div>
+          <div>Follow</div>
+          <div>
+            <ul>
+              <li><g-link to="https://www.facebook.com/alinatrifan/">Facebook</g-link></li>
+              <li><g-link to="https://www.instagram.com/_alinatrifan/">Instagram</g-link></li>
+              <li><g-link to="https://twitter.com/_alinatrifan">Twitter</g-link></li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </footer>
   </div>
 </template>
