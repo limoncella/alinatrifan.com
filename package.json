@@ -10,6 +10,7 @@
     "gridsome": "^0.7.0"
   },
   "devDependencies": {
+    "axios": "^0.21.0",
     "gridsome-plugin-tailwindcss": "^3.0.1"
   }
 }

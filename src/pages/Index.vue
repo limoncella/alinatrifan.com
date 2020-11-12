@@ -6,17 +6,36 @@
 
     <h1>Hello, willo!</h1>
 
-    <p>
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur excepturi labore tempore expedita, et iste tenetur suscipit explicabo! Dolores, aperiam non officia eos quod asperiores
-    </p>
+    <div>
+      <div v-for="picture in $page.pictures.edges" :key="picture.node.id">
+        <img :src="picture.node.Picture.url" />
+      </div>
+    </div>
 
-    <p class="home-links">
-      <a href="https://gridsome.org/docs/" target="_blank" rel="noopener">Gridsome Docs</a>
-      <a href="https://github.com/gridsome/gridsome" target="_blank" rel="noopener">GitHub</a>
-    </p>
 
   </Layout>
 </template>
+
+<page-query>
+query {
+  pictures: allPictures {
+    edges {
+      node {
+        id
+        Title
+        Date
+        Picture {
+          id
+          name
+          width
+          height
+          url
+        }
+      }
+    }
+  }
+}
+</page-query>
 
 <script>
 export default {
