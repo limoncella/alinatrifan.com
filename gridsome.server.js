@@ -13,7 +13,7 @@ const getPictures = async (jwtToken) => {
   const s3 = new aws.S3();
   const url = `${process.env.DIRECTUS_HOST}/directus/gql`;
   const payload = {
-    query: `{ pictures { data { id, file { id, storage, filename_disk  } } } }`
+    query: `{ at_photos { data { id, file { id, storage, filename_disk  } } } }`
   };
   const headers = {
     Authorization: `bearer ${process.env.DIRECTUS_TOKEN}`
@@ -22,7 +22,7 @@ const getPictures = async (jwtToken) => {
   const { data } = await axios.post(url, payload, { headers });
 
   return Promise.all(
-    data.data.pictures.data.map(async (picture) => {
+    data.data.at_photos.data.map(async (picture) => {
       const filename = picture.file.filename_disk;
       const destination = `./src/assets/pictures/${filename}`;
 
