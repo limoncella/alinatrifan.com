@@ -4,32 +4,45 @@
 
 // Changes here require a server restart.
 // To restart press CTRL + C in terminal and run `gridsome develop`
+const fs = require('fs');
 
+const aws = require("aws-sdk");
 const axios = require('axios');
 
-const login = async () => {
-  const { data } = await axios.post(`${process.env.STRAPI_HOST}/auth/local`, {
-    identifier: process.env.STRAPI_USERNAME,
-    password: process.env.STRAPI_PASSWORD,
-  });
-
-  return data.jwt;
-};
-
 const getPictures = async (jwtToken) => {
-  const { data } = await axios.get(`${process.env.STRAPI_HOST}/pictures`, {
-    headers: {
-      Authorization: `Bearer ${jwtToken}`,
-    },
-  });
+  const s3 = new aws.S3();
+  const url = `${process.env.DIRECTUS_HOST}/directus/gql`;
+  const payload = {
+    query: `{ pictures { data { id, file { id, storage, filename_disk  } } } }`
+  };
+  const headers = {
+    Authorization: `bearer ${process.env.DIRECTUS_TOKEN}`
+  };
 
-  return data;
+  const { data } = await axios.post(url, payload, { headers });
+
+  return Promise.all(
+    data.data.pictures.data.map(async (picture) => {
+      const filename = picture.file.filename_disk;
+      const destination = `./src/assets/pictures/${filename}`;
+
+      const params = {
+        Bucket: process.env.DIRECTUS_S3_BUCKET,
+        Key: `files/${filename}`,
+      }
+
+      const contents = await s3.getObject(params).promise();
+
+      await fs.promises.writeFile(destination, contents.Body);
+
+      return { ...picture, filename, url: require.resolve(destination) }
+    })
+  );
 }
 
 module.exports = async function (api) {
   api.loadSource(async (actions) => {
-    const jwtToken = await login();
-    const pictures = await getPictures(jwtToken);
+    const pictures = await getPictures();
 
     // Use the Data Store API here: https://gridsome.org/docs/data-store-api/
     const collections = {
@@ -37,7 +50,6 @@ module.exports = async function (api) {
     };
 
     pictures.forEach((picture) => {
-      picture.Picture.url = process.env.STRAPI_HOST + picture.Picture.url;
       collections.pictures.addNode(picture);
     });
   });

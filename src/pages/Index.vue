@@ -8,7 +8,7 @@
 
     <div>
       <div v-for="picture in $page.pictures.edges" :key="picture.node.id">
-        <img :src="picture.node.Picture.url" />
+        <g-image :src="picture.node.url" />
       </div>
     </div>
 
@@ -22,15 +22,7 @@ query {
     edges {
       node {
         id
-        Title
-        Date
-        Picture {
-          id
-          name
-          width
-          height
-          url
-        }
+        url
       }
     }
   }
@@ -41,7 +33,7 @@ query {
 export default {
   metaInfo: {
     title: 'Portfolio'
-  }
+  },
 }
 </script>
 
