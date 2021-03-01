@@ -12,6 +12,7 @@
   "devDependencies": {
     "aws-sdk": "^2.792.0",
     "axios": "^0.21.0",
-    "gridsome-plugin-tailwindcss": "^3.0.1"
+    "gridsome-plugin-tailwindcss": "^3.0.1",
+    "yaml": "^1.10.0"
   }
 }

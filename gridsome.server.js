@@ -9,47 +9,58 @@ const fs = require('fs');
 const aws = require("aws-sdk");
 const axios = require('axios');
 
-const getPictures = async (jwtToken) => {
-  const s3 = new aws.S3();
-  const url = `${process.env.DIRECTUS_HOST}/directus/gql`;
-  const payload = {
-    query: `{ at_photos { data { id, file { id, storage, filename_disk  } } } }`
-  };
-  const headers = {
-    Authorization: `bearer ${process.env.DIRECTUS_TOKEN}`
-  };
+// const getPictures = async (jwtToken) => {
+//   const s3 = new aws.S3();
+//   const url = `${process.env.DIRECTUS_HOST}/directus/gql`;
+//   const payload = {
+//     query: `{ at_photos { data { id, file { id, storage, filename_disk  } } } }`
+//   };
+//   const headers = {
+//     Authorization: `bearer ${process.env.DIRECTUS_TOKEN}`
+//   };
 
-  const { data } = await axios.post(url, payload, { headers });
+//   const { data } = await axios.post(url, payload, { headers });
 
-  return Promise.all(
-    data.data.at_photos.data.map(async (picture) => {
-      const filename = picture.file.filename_disk;
-      const destination = `./src/assets/pictures/${filename}`;
+//   return Promise.all(
+//     data.data.at_photos.data.map(async (picture) => {
+//       const filename = picture.file.filename_disk;
+//       const destination = `./src/assets/pictures/${filename}`;
 
-      const params = {
-        Bucket: process.env.DIRECTUS_S3_BUCKET,
-        Key: `files/${filename}`,
-      }
+//       const params = {
+//         Bucket: process.env.DIRECTUS_S3_BUCKET,
+//         Key: `files/${filename}`,
+//       }
 
-      const contents = await s3.getObject(params).promise();
+//       const contents = await s3.getObject(params).promise();
 
-      await fs.promises.writeFile(destination, contents.Body);
+//       await fs.promises.writeFile(destination, contents.Body);
 
-      return { ...picture, filename, url: require.resolve(destination) }
-    })
-  );
+//       return { ...picture, filename, url: require.resolve(destination) }
+//     })
+//   );
+// }
+
+const getContents = async () => {
+  const yaml = require("yaml");
+  const fp = fs.readFileSync('./content.yml', 'utf8');
+
+  const contents = yaml.parse(fp);
+
+  console.log({ contents });
+
+  return contents;
 }
 
 module.exports = async function (api) {
   api.loadSource(async (actions) => {
-    const pictures = await getPictures();
+    const contents = await getContents();
 
     // Use the Data Store API here: https://gridsome.org/docs/data-store-api/
     const collections = {
       pictures: actions.addCollection({ typeName: 'Pictures' }),
     };
 
-    pictures.forEach((picture) => {
+    contents.pictures.forEach((picture) => {
       collections.pictures.addNode(picture);
     });
   });

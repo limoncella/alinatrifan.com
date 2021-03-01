@@ -1,14 +1,11 @@
 <template>
   <Layout>
 
-    <!-- Learn how to use images here: https://gridsome.org/docs/images -->
-    <g-image alt="Example image" src="~/favicon.png" width="135" />
-
-    <h1>Hello, willo!</h1>
-
     <div>
       <div v-for="picture in $page.pictures.edges" :key="picture.node.id">
-        <g-image :src="picture.node.url" />
+        <div class="image-container">
+          <g-image :src="picture.node.url" />
+        </div>
       </div>
     </div>
 
@@ -40,5 +37,18 @@ export default {
 <style>
 .home-links a {
   margin-right: 1rem;
+}
+
+.image-container {
+  padding: 10px;
+  width: 100%;
+  height: 80vh;
+  margin: auto;
+}
+
+.image-container img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain
 }
 </style>
